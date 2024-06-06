@@ -1,25 +1,55 @@
-import React from 'react'
-import Post from '../Post/Post'
-import User from '../User/User'
-import "./Home.css"
+import { Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFollowingPosts } from '../Actions/User';
+import Loader from '../Loader/Loader';
+import Post from '../Post/Post';
+import User from '../User/User';
+import "./Home.css";
+
 const Home = () => {
+    const dispatch = useDispatch();
+
+    const { loading, posts, error } = useSelector((state) => state.postOfFollowing);
+
+    useEffect(() => {
+        dispatch(getFollowingPosts());
+    }, [dispatch]);
+
     return (
-        <div>
-            <div className="home">
-                <div className="homeleft">
-                    <Post postImage="https://www.w3schools.com/w3css/img_snowtops.jpg" ownerName={"Aradhya"} caption={"This is the sample photo"}/>
-                </div>
+        loading ? <Loader /> : (
+            <div>
+                <div className="home">
+                    <div className="homeleft">
+                        {posts && posts.length > 0 ? (
+                            posts.map((post) => (
+                                <Post
+                                    key={post._id}
+                                    postId={post._id}
+                                    caption={post.caption}
+                                    postImage={post.image?.url || ''}
+                                    likes={post.likes}
+                                    comments={post.comments}
+                                    ownerImage={post.owner?.avatar?.url || ''}
+                                    ownerName={post.owner?.name || 'Unknown'}
+                                    ownerId={post.owner?._id || ''}
+                                />
+                            ))
+                        ) : (
+                            <Typography variant="h6">No posts yet</Typography>
+                        )}
+                    </div>
                     <div className="homeright">
                         <User
-                        userId = {"user._id"}
-                        name = {"user.name"}
-                        avatar = {"user.avatar.url"}
+                            userId={"user._id"}
+                            name={"user.name"}
+                            avatar={"user.avatar.url"}
                         />
                     </div>
-                
+                </div>
             </div>
-        </div>
-    )
+        )
+    );
 }
 
-export default Home
+export default Home;

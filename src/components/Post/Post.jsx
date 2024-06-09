@@ -1,5 +1,5 @@
-import { Avatar, Typography, Button } from '@mui/material'
-import React from 'react'
+import { Avatar, Typography, Button, Dialog } from '@mui/material'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
     MoreVert,
@@ -10,6 +10,10 @@ import {
 } from "@mui/icons-material";
 import "./Post.css"
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { likePost } from '../Actions/Post';
+import { getFollowingPosts } from '../Actions/User';
+import User from '../User/User';
 const Post = ({
     postId,
     caption,
@@ -23,14 +27,33 @@ const Post = ({
     isAccount = false,
 }) => {
     const [liked, setLiked] = useState(false);
+    const dispatch = useDispatch();
+    const {user} = useSelector((state) => state.user);
+    const [likesUser, setLikesUser] = useState(false);
 
-    function handleLike() {
+    const handleLike = async () => {
         setLiked(!liked);
-    }
+        await dispatch(likePost(postId));
+
+        if(isAccount){
+            console.log("Bring me my posts");
+        }else{
+            dispatch(getFollowingPosts());
+        }
+    };
+
+    useEffect(() => {
+        likes.forEach(item => {
+            if(item._id === user._id){
+                setLiked(true);
+            }
+        })
+    }, [likes, user._id]);
+
     return (
         <div className='post'>
             <div className='postHeader'>
-            {isAccount ? <Button><MoreVert/></Button> : null}
+                {isAccount ? <Button><MoreVert /></Button> : null}
             </div>
             <img src={postImage} alt="Post" />
             <div className='postDetails'>
@@ -57,8 +80,12 @@ const Post = ({
                 backgroundColor: "white",
                 cursor: "pointer",
                 margin: "1vmax 2vmax",
-            }}>
-                <Typography>5 Likes</Typography>
+            }}
+            onClick={() => setLikesUser(!likesUser)}
+
+            disabled={likes.length === 0 ? true: false}
+            >
+                <Typography>{likes.length} Likes</Typography>
             </button>
 
             <div className="postFooter">
@@ -78,6 +105,21 @@ const Post = ({
                         null
                 }
             </div>
+            <Dialog open={likesUser} onClose={() => setLikesUser(!likesUser)}>
+                <div className='DialogBox'>
+                    <Typography variant='h4'>Liked By</Typography>
+                    {
+                        likes.map((like) => (
+                            <User
+                            key={like._id}
+                            userId={like._id}
+                            name={like.name}
+                            avatar={like?.avatar?.url || ''}
+                            />
+                        ))
+                    }
+                </div>
+            </Dialog>
         </div>
     )
 }

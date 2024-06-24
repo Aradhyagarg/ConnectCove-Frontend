@@ -11,10 +11,12 @@ import {
 import "./Post.css"
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCommentOnPost, likePost } from '../Actions/Post';
-import { getFollowingPosts } from '../Actions/User';
+import { addCommentOnPost, deletePost, likePost, updatePost } from '../Actions/Post';
+import { getFollowingPosts, loadUser } from '../Actions/User';
 import User from '../User/User';
 import CommentCard from '../CommentCard/CommentCard';
+import { getMyPosts } from '../Actions/User';
+
 const Post = ({
     postId,
     caption,
@@ -32,17 +34,32 @@ const Post = ({
     const {user} = useSelector((state) => state.user);
     const [likesUser, setLikesUser] = useState(false);
     const [commentValue, setCommentValue] = useState("");
-    const [commentToggle, setCommentToggle] = useState("");
+    const [commentToggle, setCommentToggle] = useState(false);
+    const [captionValue, setCaptionValue] = useState(caption);
+    const [captionToggle, setCaptionToggle] = useState(false);
 
     const addCommentHandler = async(e) => {
         e.preventDefault();
         await dispatch(addCommentOnPost(postId, commentValue));
 
         if(isAccount){
-            console.log("Bring me my post");
+            dispatch(getMyPosts());
         }else{
             dispatch(getFollowingPosts());
         }
+    }
+
+    const updateCaptionHandler = async(e) => {
+        e.preventDefault();
+        await dispatch(updatePost(captionValue, postId));
+        await dispatch(getMyPosts());
+    }
+
+    const deleteHandler = async(e) => {
+        e.preventDefault();
+        await dispatch(deletePost(postId));
+        await dispatch(getMyPosts());
+        await dispatch(loadUser());
     }
 
     const handleLike = async () => {
@@ -50,7 +67,7 @@ const Post = ({
         await dispatch(likePost(postId));
 
         if(isAccount){
-            console.log("Bring me my posts");
+            dispatch(getMyPosts());
         }else{
             dispatch(getFollowingPosts());
         }
@@ -67,7 +84,10 @@ const Post = ({
     return (
         <div className='post'>
             <div className='postHeader'>
-                {isAccount ? <Button><MoreVert /></Button> : null}
+                {isAccount ? 
+                <Button onClick={() => setCaptionToggle(!captionToggle)}>
+                    <MoreVert />
+                </Button> : null}
             </div>
             <img src={postImage} alt="Post" />
             <div className='postDetails'>
@@ -114,7 +134,9 @@ const Post = ({
                 {
                     isDelete ?
                         (
+                            <Button onClick={deleteHandler}>
                             <DeleteOutline />
+                            </Button>
                         ) :
                         null
                 }
@@ -155,10 +177,27 @@ const Post = ({
                             avatar={item.user.avatar.url}
                             comment={item.comment}
                             commentId={item._id}
+                            key={item._id}
                             postId={postId}
                             isAccount={isAccount}/>)
                         ):(<Typography>No comments Yet</Typography>)
                     }
+                </div>
+            </Dialog>
+
+            <Dialog open={captionToggle} onClose={() => setCaptionToggle(!captionToggle)}>
+                <div className='DialogBox'>
+                    <Typography variant='h4'>Update Caption</Typography>
+                    <form className='commentForm' onSubmit={updateCaptionHandler}>
+                        <input type="text"
+                        value={captionValue}
+                        onChange={(e) => setCaptionValue(e.target.value)}
+                        placeholder="Caption Here..."
+                        required/>
+                        <Button type="submit" variant="contained">
+                            Add
+                        </Button>
+                    </form>
                 </div>
             </Dialog>
         </div>

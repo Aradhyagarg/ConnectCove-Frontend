@@ -6,6 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadUser } from './components/Actions/User';
 import { useEffect } from 'react';
 import Home from './components/Home/Home';
+import Account from './components/Account/Account';
+import NewPost from './components/NewPost/NewPost';
+import Register from './components/Register/Register';
+import UpdateProfile from './components/UpdateProfile/UpdateProfile';
 
 function App() {
   const dispatch = useDispatch();
@@ -23,6 +27,10 @@ function App() {
 
       <Routes>
         <Route path='/' element={isAuthenticated ? <Home/> : <Login/>} />
+        <Route path='/account' element={isAuthenticated ? <Account/> : <Login/>}/>
+        <Route path='/newpost' element={isAuthenticated ? <NewPost/> : <Login/>}/>
+        <Route path='/register' element={isAuthenticated ? <Account/> : <Register/>}/>
+        <Route path='/update/profile' element={isAuthenticated ? <UpdateProfile/> : <Login/>}/>
       </Routes>
     </Router>
   );

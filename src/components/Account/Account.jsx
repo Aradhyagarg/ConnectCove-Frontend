@@ -13,7 +13,7 @@ const Account = () => {
   const dispatch = useDispatch();
   const alert = useAlert();
 
-  const { user, loading: userLoading } = useSelector((state) => state.user);
+  const { user, loading: userLoading} = useSelector((state) => state.user);
   const { loading, error, posts } = useSelector((state) => state.myPosts);
   const {
     error: likeError,
@@ -28,6 +28,11 @@ const Account = () => {
     dispatch(logoutUser());
     alert.success("Logged out successfully");
   };
+
+  const deleteProfileHandler = async() => {
+    await dispatch(deleteMyProfile());
+    dispatch(logoutUser());
+  }
 
   useEffect(() => {
      dispatch(getMyPosts());
@@ -65,7 +70,7 @@ const Account = () => {
               comments={post.comments}
               ownerImage={post.owner.avatar?.url} // Check if post.owner and post.owner.avatar exist
               ownerName={post.owner.name} // Check if post.owner exists
-              ownerId={post.owner._id} // Check if post.owner exists
+              ownerId={post.owner._id}
               isAccount={true}
               isDelete={true}
             />
@@ -107,6 +112,9 @@ const Account = () => {
 
         <Link to="/update/profile">Edit Profile</Link>
         <Link to="/update/password">Change Password</Link>
+
+        <Button variant="text"
+          style={{ color: "red", margin: "2vmax" }} disabled={deleteLoading} onClick={deleteProfileHandler}>Delete Button</Button>
 
         <Dialog
           open={followersToggle}

@@ -12,6 +12,7 @@ export const likePost = (id) => async (dispatch) => {
       payload: data.message,
     });
   } catch (error) {
+    console.log(error);
     dispatch({
       type: "likeFailure",
       payload: error.response.data.message,
@@ -37,6 +38,7 @@ export const addCommentOnPost = (id, comment) => async(dispatch) => {
             payload: data.message,
         });
     }catch(error){
+      console.log(error);
         dispatch({
             type: "addCommentFailure",
             payload: error.response.data.message,
@@ -58,6 +60,7 @@ export const deleteCommentOnPost = (id, commentId) => async (dispatch) => {
         payload: data.message,
       });
     } catch (error) {
+      console.log(error);
       dispatch({
         type: "deleteCommentFailure",
         payload: error.response.data.message,
@@ -88,6 +91,7 @@ export const deleteCommentOnPost = (id, commentId) => async (dispatch) => {
         payload: data.message,
       });
     } catch (error) {
+      console.log(error);
       dispatch({
         type: "newPostFailure",
         payload: error.response.data.message,
@@ -112,6 +116,7 @@ export const deleteCommentOnPost = (id, commentId) => async (dispatch) => {
             payload: data.message
         })
     }catch(error){
+      console.log(error);
         dispatch({
             type: "updateCaptionFailure",
             payload: error.response.data.message,
@@ -132,6 +137,7 @@ export const deleteCommentOnPost = (id, commentId) => async (dispatch) => {
             payload: data.message
         })
     }catch(error){
+      console.log(error);
         dispatch({
             type: "deletePostFailure",
             payload: error.response.data.message,

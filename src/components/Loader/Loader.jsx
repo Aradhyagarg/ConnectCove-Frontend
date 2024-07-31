@@ -1,11 +1,11 @@
-import React from 'react'
-
+import React from "react";
+import "./Loader.css";
 const Loader = () => {
   return (
-    <div>
-      <h1>Loading</h1>
+    <div className="loadingPage">
+      <div className="loadingCircle"></div>
     </div>
-  )
-}
+  );
+};
 
-export default Loader
+export default Loader;

@@ -131,22 +131,6 @@ export const likeReducer = createReducer(initialState, {
     }
 })
 
-/*export const myPostReducer = createReducer(initialState, {
-    myPostsRequest: (state) => {
-        state.loading = true;
-    },
-    myPostsSuccess: (state, action) => {
-        state.loading = false;
-        state.message = action.payload;
-    },
-    myPostsFailure: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-    },
-    clearErrors: (state) => {
-        state.error = null
-    },
-})*/
 export const myPostReducer = createReducer(initialState, {
     myPostsRequest: (state) => {
         state.loading = true;
